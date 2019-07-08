@@ -1,0 +1,2 @@
+dog.jpg: By Fausto Morales
+cat.jpg: By André Karwath aka Aka - Own work, CC BY-SA 2.5, https://commons.wikimedia.org/w/index.php?curid=217417

@@ -1,0 +1,21 @@
+version: 2.1
+
+executors:
+  retinanetjs-executor:
+    machine:
+          image: ubuntu-1604:201903-01
+
+jobs:
+  build:
+    executor: retinanetjs-executor
+    steps:
+      - checkout
+      - run:
+          name: Build container
+          command: make build
+      - run:
+          name: Download test models
+          command: make download_test_models
+      - run:
+          name: Run precommit check
+          command: make precommit
