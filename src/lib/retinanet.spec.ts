@@ -102,7 +102,8 @@ test('cats and dogs model', async t => {
     tfn.io.fileSystem(
       'test_assets/models/mobilenet224_1_0_oxfordcatdog/model.json'
     ),
-    ['DOG', 'CAT']
+    ['DOG', 'CAT'],
+    'tf'
   );
   const catDetections = await detector.detect(
     await imageFilepathToTensor('test_assets/images/cat.jpg'),
@@ -122,7 +123,8 @@ test('resnet50 model', async t => {
     tfn.io.fileSystem(
       'test_assets/models/resnet50_coco_best_v2.1.0/model.json'
     ),
-    COCO_CLASSES
+    COCO_CLASSES,
+    'caffe'
   );
   const dogDetections = await detector.detect(
     await imageFilepathToTensor('test_assets/images/dog.jpg'),

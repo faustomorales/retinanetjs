@@ -12,5 +12,17 @@ build/docs
 coverage
 .nyc_output
 *.log
+
+# Irrelevant files
 notebooks
 test_assets
+Dockerfile*
+Makefile
+.circleci
+.dockerignore
+.editorconfig
+yarn.lock
+
+# MacOS
+.Trash-0
+.DS_Store

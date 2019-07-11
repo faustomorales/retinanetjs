@@ -1,1 +1,1 @@
-export * from './lib/retinanet';
+export { load } from './lib/retinanet';
