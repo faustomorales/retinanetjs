@@ -61,14 +61,12 @@
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
 				<h1 id="retinanetjs">retinanetjs</h1>
-				<p>This package provides some convenience methods for using TensorFlow models created using <code>keras-retinanet</code>.</p>
+				<p>This package provides some convenience methods for using TensorFlow models created using <code>keras-retinanet</code>. Check out <a href="https://faustomorales.github.io/retinanetjs/">the docs</a>.</p>
 				<h2 id="getting-started">Getting Started</h2>
 				<h3 id="convert-retinanet-model-to-tensorflowjs">Convert RetinaNet Model to TensorFlowJS</h3>
-				<p>The example below converts the weights which are released with RetinaNet to TensorFlowJS. A few things to note:</p>
-				<ul>
-					<li>You must supply a fixed input shape. In experimenting with different backbones, only a few functioned correctly with undefined input shapes when loaded with TensorFlowJS.</li>
-					<li>We do not convert to a prediction model. Rather, we do the necessary box regression in TensorFlowJS. Including them made some backbones load incorrectly in TensorFlowJS.</li>
-				</ul>
+				<p>As an example, we&#39;ll convert the ResNet50 weights to TensorFlow.js format. You must have <code>tensorflowjs</code> installed.</p>
+				<p>First, save a fixed input size training model to a Keras h5 file with both the weights and architecture. You <strong>must</strong> supply a fixed input shape. In experimenting with different backbones, only a few functioned correctly with undefined input shapes when loaded with TensorFlowJS.</p>
+				<p>Importantly, we <strong>do not</strong> convert to a prediction model. Rather, we do the necessary box regression in TensorFlowJS. Including them made some backbones load incorrectly in TensorFlow.js.</p>
 				<pre><code class="language-python"><span class="hljs-keyword">import</span> urllib.request
 
 <span class="hljs-keyword">import</span> keras
@@ -79,17 +77,20 @@ urllib.request.urlretrieve(
     <span class="hljs-string">"resnet50_coco_best_v2.1.0.h5"</span>
 )
 
-model = models.backbone(backbone_name=<span class="hljs-string">'resnet50'</span>).retinanet(
-    num_classes=<span class="hljs-number">80</span>, inputs=keras.layers.Input((<span class="hljs-number">512</span>, <span class="hljs-number">512</span>, <span class="hljs-number">3</span>))
+model = models.backbone(
+    backbone_name=<span class="hljs-string">'resnet50'</span>).retinanet(
+    num_classes=<span class="hljs-number">80</span>,
+    inputs=keras.layers.Input((<span class="hljs-number">512</span>, <span class="hljs-number">512</span>, <span class="hljs-number">3</span>)
+)
 )
 model.load_weights(<span class="hljs-string">'resnet50_coco_best_v2.1.0.h5'</span>)
-model.save(<span class="hljs-string">'resnet50_coco_best_v2.1.0_full.h5'</span>)
-
-!tensorflowjs_converter \
+model.save(<span class="hljs-string">'resnet50_coco_best_v2.1.0_full.h5'</span>)</code></pre>
+				<p>Then, at the command line, execute the following.</p>
+				<pre><code class="language-shell">tensorflowjs_converter \
     --input_format=keras \
     --output_format=tfjs_layers_model \
-     resnet50_coco_best_v2<span class="hljs-number">.1</span><span class="hljs-number">.0</span>_full.h5 \
-     resnet50_coco_best_v2<span class="hljs-number">.1</span><span class="hljs-number">.0</span></code></pre>
+     resnet50_coco_best_v2.1.0_full.h5 \
+     resnet50_coco_best_v2.1.0</code></pre>
 				<h3 id="using-model-with-retinanetjs">Using Model with retinanetjs</h3>
 				<p>The code below loads the above model and does detection. We assume that you have a reference to an <code>HTMLImage</code> object in <code>imageRef</code> and a list of the COCO class label names in <code>COCO_CLASSES</code>. Note that you must supply the preprocessing mode. Check the <code>preprocess_image</code> method on your backbone to see whether your model uses <code>tf</code> or <code>caffe</code> preprocessing.</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { load } <span class="hljs-keyword">from</span> <span class="hljs-string">'retinanetjs'</span>
@@ -99,6 +100,12 @@ model.save(<span class="hljs-string">'resnet50_coco_best_v2.1.0_full.h5'</span>)
     COCO_CLASSES, <span class="hljs-string">"caffe"</span>
 )
 <span class="hljs-keyword">const</span> detections = detector.detect(imageRef)</code></pre>
+				<h2 id="limitations">Limitations</h2>
+				<p>The following features are not supported at this time:</p>
+				<ul>
+					<li>Unspecified input shapes (e.g., <code>(None, None, 3)</code>)</li>
+					<li>Class-specific filtering. For the moment, non-max suppression is performed across all classes.</li>
+				</ul>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
