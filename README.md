@@ -1,14 +1,15 @@
 # retinanetjs
 
-This package provides some convenience methods for using TensorFlow models created using `keras-retinanet`.
+This package provides some convenience methods for using TensorFlow models created using `keras-retinanet`. Check out [the docs](https://faustomorales.github.io/retinanetjs/).
 
 ## Getting Started
 
 ### Convert RetinaNet Model to TensorFlowJS
-The example below converts the weights which are released with RetinaNet to TensorFlowJS. A few things to note:
+As an example, we'll convert the ResNet50 weights to TensorFlow.js format. You must have `tensorflowjs` installed.
 
-- You must supply a fixed input shape. In experimenting with different backbones, only a few functioned correctly with undefined input shapes when loaded with TensorFlowJS.
-- We do not convert to a prediction model. Rather, we do the necessary box regression in TensorFlowJS. Including them made some backbones load incorrectly in TensorFlowJS.
+First, save a fixed input size training model to a Keras h5 file with both the weights and architecture. You **must** supply a fixed input shape. In experimenting with different backbones, only a few functioned correctly with undefined input shapes when loaded with TensorFlowJS.
+
+Importantly, we **do not** convert to a prediction model. Rather, we do the necessary box regression in TensorFlowJS. Including them made some backbones load incorrectly in TensorFlow.js.
 
 ```python
 import urllib.request
@@ -21,13 +22,20 @@ urllib.request.urlretrieve(
     "resnet50_coco_best_v2.1.0.h5"
 )
 
-model = models.backbone(backbone_name='resnet50').retinanet(
-    num_classes=80, inputs=keras.layers.Input((512, 512, 3))
+model = models.backbone(
+    backbone_name='resnet50').retinanet(
+    num_classes=80,
+    inputs=keras.layers.Input((512, 512, 3)
+)
 )
 model.load_weights('resnet50_coco_best_v2.1.0.h5')
 model.save('resnet50_coco_best_v2.1.0_full.h5')
+```
 
-!tensorflowjs_converter \
+Then, at the command line, execute the following.
+
+```shell
+tensorflowjs_converter \
     --input_format=keras \
     --output_format=tfjs_layers_model \
      resnet50_coco_best_v2.1.0_full.h5 \
@@ -46,3 +54,8 @@ const detector = await load(
 )
 const detections = detector.detect(imageRef)
 ```
+
+## Limitations
+The following features are not supported at this time:
+- Unspecified input shapes (e.g., `(None, None, 3)`)
+- Class-specific filtering. For the moment, non-max suppression is performed across all classes.
