@@ -1,12 +1,14 @@
 IMAGE_NAME = retinanetjs
 VOLUME_NAME = $(IMAGE_NAME)_env
 NOTEBOOK_PORT = 5000
-IN_DOCKER = docker run -v $(PWD):/usr/src -v $(VOLUME_NAME):/usr/src/node_modules --rm -it $(IMAGE_NAME)
+IN_DOCKER = docker run -v $(PWD):/usr/src -v ~/.ssh:/root/.ssh -v $(VOLUME_NAME):/usr/src/node_modules --rm -it $(IMAGE_NAME)
 
 .PHONY: build
 build:
 	docker build --rm --force-rm -t $(IMAGE_NAME) .
 	@-docker volume rm $(VOLUME_NAME)
+bash:
+	$(IN_DOCKER) bash
 init:
 	yarn install
 download_test_models: build
@@ -16,7 +18,6 @@ download_test_models: build
 	$(IN_DOCKER) gsutil -m rsync -r -d gs://retinanetjs/models/resnet50_coco_best_v2.1.0 ./test_assets/models/resnet50_coco_best_v2.1.0
 precommit:
 	$(IN_DOCKER) yarn test
-
 build-notebooks:
 	docker build -t $(IMAGE_NAME)_notebooks -f Dockerfile-notebooks .
 .PHONY: notebooks
