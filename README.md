@@ -1,6 +1,6 @@
 # retinanetjs
 
-This package provides some convenience methods for using TensorFlow models created using `keras-retinanet`. Check out [the docs](https://faustomorales.github.io/retinanetjs/).
+This package provides some convenience methods for using TensorFlow models created using `keras-retinanet`. Check out [the docs](https://faustomorales.github.io/retinanetjs/). You can also check out the [example app](https://github.com/faustomorales/retinanetjs-example-app).
 
 ## Getting Started
 
