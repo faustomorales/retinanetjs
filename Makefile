@@ -23,3 +23,6 @@ build-notebooks:
 .PHONY: notebooks
 notebooks: build-notebooks
 	docker run -v $(PWD):/usr/src -it -w /usr/src -p $(NOTEBOOK_PORT):$(NOTEBOOK_PORT) $(IMAGE_NAME)_notebooks jupyter notebook --ip=0.0.0.0 --port=$(NOTEBOOK_PORT) --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+prepare-release:
+	@-docker volume rm $(VOLUME_NAME)
+	$(IN_DOCKER) yarn prepare-release
